@@ -1,2 +1,2 @@
 # socialPaper
-Web Social Blog
+Web Social Blog!
