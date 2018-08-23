@@ -16,10 +16,14 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(String userName, String email, String password) {
-        this.userName = userName;
+    public UserDto(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public UserDto(String userName, String email, String password) {
+        this(email,password);
+        this.userName = userName;
     }
 
     public String getUserName() {

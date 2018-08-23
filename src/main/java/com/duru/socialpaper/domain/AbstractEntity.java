@@ -1,6 +1,7 @@
 package com.duru.socialpaper.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,12 +17,15 @@ public class AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
 
     @CreatedDate
+    @JsonIgnore
     private LocalDateTime createDate;
 
     @LastModifiedDate
+    @JsonIgnore
     private LocalDateTime modifiedDate;
 
     public AbstractEntity() {

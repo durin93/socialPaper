@@ -1,9 +1,16 @@
 package com.duru.socialpaper.web;
 
 import com.duru.socialpaper.domain.User;
+import com.duru.socialpaper.dto.UserDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.*;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.BodyInserters;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,25 +20,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiUserControllerTest extends  AcceptanceTest{
 
+    private ObjectMapper om = new ObjectMapper();
 
     @Test
-    public void regist(){
+    public void login() throws JsonProcessingException {
+        UserDto user = new UserDto("durin@gmail.com", "1234");
+        String userJSON = om.writeValueAsString(user);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        User loginUser =
+        webTestClient.post().uri("/api/users/login")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(userJSON))
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().exists("Authorization")
+                .expectBody(User.class)
+                .returnResult().getResponseBody();
 
-        Map<String, Object> value = new HashMap<>();
-        value.put("userName", "Jacob");
-        value.put("email", "jake@jake.jake");
-        value.put("password","jakejake");
+        assertThat(loginUser.getEmail()).isEqualTo("durin@gmail.com");
+        assertThat(loginUser.getPassword()).isEqualTo("1234");
 
-        HttpEntity<Map<String,Object>> request = new HttpEntity<>(value,headers);
 
-        ResponseEntity<User> response = testRestTemplate.postForEntity("/api/users" , request, User.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(response.getBody()).isEqualTo(new User("Jacob","jake@jake.jake","jakejake"));
+    }
 
+    @Test
+    public void regist() throws JsonProcessingException {
+
+
+        UserDto user = new UserDto("Jacob", "jake@jake.jake", "jakejake");
+        String userJSON = om.writeValueAsString(user);
+
+
+                webTestClient.post().uri("/api/users")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(userJSON))
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().doesNotExist("Authorization")
+                .expectBody(User.class)
+                .isEqualTo(new User("Jacob","jake@jake.jake","jakejake"));
     }
 
 
