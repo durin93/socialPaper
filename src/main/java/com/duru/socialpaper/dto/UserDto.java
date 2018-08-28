@@ -6,12 +6,13 @@ import java.util.Objects;
 
 public class UserDto {
 
-
-    private String userName;
+    private String username;
 
     private String email;
 
     private String password;
+
+
 
     public UserDto() {
     }
@@ -21,17 +22,22 @@ public class UserDto {
         this.password = password;
     }
 
-    public UserDto(String userName, String email, String password) {
+    public UserDto(String username, String email, String password) {
         this(email,password);
-        this.userName = userName;
+        this.username = username;
     }
 
-    public String getUserName() {
-        return userName;
+
+    public User toUser() {
+        return new User(username,email,password);
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -50,17 +56,12 @@ public class UserDto {
         this.password = password;
     }
 
-    public User toUser() {
-        return new User(userName,email,password);
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDto userDto = (UserDto) o;
-        return Objects.equals(userName, userDto.userName) &&
+        return Objects.equals(username, userDto.username) &&
                 Objects.equals(email, userDto.email) &&
                 Objects.equals(password, userDto.password);
     }
@@ -68,13 +69,13 @@ public class UserDto {
     @Override
     public int hashCode() {
 
-        return Objects.hash(userName, email, password);
+        return Objects.hash(username, email, password);
     }
 
     @Override
     public String toString() {
         return "UserDto{" +
-                "userName='" + userName + '\'' +
+                "userName='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';

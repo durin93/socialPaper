@@ -30,14 +30,16 @@ public class UserService {
         User user = userDto.toUser();
         log.info("UserSerice registration {}", user.toString());
         log.debug("UserSerice registration {}", user.toString());
+        user.makeJwtToken(jwtService);
         return userRepository.save(user);
     }
 
 
     public User authentication(UserDto userDto) {
+        log.debug("UserService authentication {}", userDto.toString());
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(EntityNotFoundException::new);
-        user.matchPassword(userDto);
-        user.makeJwtToken(jwtService);
+        user.matchPassword(userDto.getPassword());
+//        user.makeJwtToken(jwtService);
         return user;
     }
 

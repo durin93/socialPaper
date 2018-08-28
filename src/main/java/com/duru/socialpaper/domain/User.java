@@ -4,6 +4,7 @@ import com.duru.socialpaper.dto.UserDto;
 import com.duru.socialpaper.exception.NoAuthentication;
 import com.duru.socialpaper.service.JwtService;
 import com.duru.socialpaper.service.UserService;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.sun.org.apache.xml.internal.security.utils.Base64;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,17 +13,19 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
+@JsonRootName("user")
 public class User extends  AbstractEntity{
 
     private static final Logger log = LoggerFactory.getLogger(User.class);
 
 
     @Column(nullable = false)
-    private String userName;
+    private String username;
 
     @Column(nullable = false)
     private String email;
@@ -30,6 +33,7 @@ public class User extends  AbstractEntity{
     @Column(nullable = false)
     private String password;
 
+    @Lob
     private String token;
 
     private String bio;
@@ -39,15 +43,15 @@ public class User extends  AbstractEntity{
     public User() {
     }
 
-    public User(String userName, String email, String password) {
+    public User(String username, String email, String password) {
         super(0L);
-        this.userName = userName;
+        this.username = username;
         this.email = email;
         this.password = password;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
     public String getEmail() {
@@ -62,28 +66,19 @@ public class User extends  AbstractEntity{
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 
     public String getBio() {
         return bio;
     }
 
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
 
     public String getImage() {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
 
-    public void matchPassword(UserDto userDto) {
-        if(!this.password.equals(userDto.getPassword())){
+    public void matchPassword(String password) {
+        if(!this.password.equals(password)){
             throw new NoAuthentication("비밀번호가 틀립니다.");
         }
     }
@@ -100,7 +95,7 @@ public class User extends  AbstractEntity{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userName, user.userName) &&
+        return Objects.equals(username, user.username) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(password, user.password);
     }
@@ -108,13 +103,13 @@ public class User extends  AbstractEntity{
     @Override
     public int hashCode() {
 
-        return Objects.hash(userName, email, password);
+        return Objects.hash(username, email, password);
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userName='" + userName + '\'' +
+                "userName='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", token='" + token + '\'' +
