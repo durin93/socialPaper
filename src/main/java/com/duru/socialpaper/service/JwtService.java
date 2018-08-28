@@ -33,7 +33,7 @@ public class JwtService {
                 .setHeaderParam("typ", "JWT")
                 .setHeaderParam("regDate", System.currentTimeMillis())
                 .setSubject(subject)
-                .claim(key, data)
+                .claim(key, (String)data)
                 .signWith(SignatureAlgorithm.HS256, this.generateKey())
                 .compact();
         return jwt;
@@ -55,21 +55,23 @@ public class JwtService {
     }
 
     public boolean isUsable(String jwt) {
+
         try{
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(this.generateKey())
                     .parseClaimsJws(jwt);
             return true;
-
         }catch (Exception e) {
             throw new UnAuthorization("계정 권한이 유효하지 않습니다.\n다시 로그인을 해주세요.");
         }
     }
 
 
-    public Map<String, Object> get(String key) {
+//    public Map<String, Object> get(String key) {
+    public String get(String key) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader("Authorization").substring(5).trim();
+
         Jws<Claims> claims = null;
         try {
             claims = Jwts.parser()
@@ -78,8 +80,11 @@ public class JwtService {
         } catch (Exception e) {
             throw new UnAuthorization();
         }
+
+
         @SuppressWarnings("unchecked")
-        Map<String, Object> value = (LinkedHashMap<String, Object>)claims.getBody().get(key);
+//        Map<String, Object> value = (LinkedHashMap<String, Object>)claims.getBody().get(key);
+        String value = (String) claims.getBody().get(key);
         return value;
     }
 

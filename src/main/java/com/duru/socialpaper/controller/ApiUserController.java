@@ -25,12 +25,12 @@ public class ApiUserController {
 
     @GetMapping("")
     public ResponseEntity<User> currentUser(){
+        return new ResponseEntity<User>(userService.currentUser(jwtService.get("social")),HttpStatus.OK);
+    }
 
-        Map<String, Object> email =   jwtService.get("social");
-
-        System.out.println(email.toString());
-
-        return new ResponseEntity<User>(null);
+    @PutMapping("")
+    public ResponseEntity<User> updateUser(@RequestBody Map<String,UserDto> data){
+        return new ResponseEntity<User>(userService.update(jwtService.get("social"),data.get("user")),HttpStatus.OK);
     }
 
 

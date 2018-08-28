@@ -31,7 +31,8 @@ public class ApiUsersController {
     @PostMapping("")
     public ResponseEntity<User> registration(@RequestBody Map<String,UserDto> data){
         log.info("ApiUserController registration {}", data.get("user").toString());
-        return new ResponseEntity<User>(userService.registration(data.get("user")),HttpStatus.CREATED);
+
+        return new ResponseEntity<>(userService.registration(data.get("user")),HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -40,9 +41,9 @@ public class ApiUsersController {
 
         HttpHeaders headers = new HttpHeaders();
         User user =   userService.authentication(data.get("user"));
-        headers.set("Authorization", "Token "+user.getToken());
+        headers.set("Authorization", "Token "+ user.getToken());
 
-        return new ResponseEntity<>(user,headers,HttpStatus.OK);
+        return new ResponseEntity<User>(user,headers,HttpStatus.OK);
     }
 
 

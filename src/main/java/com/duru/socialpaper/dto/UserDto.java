@@ -12,19 +12,32 @@ public class UserDto {
 
     private String password;
 
+    private String token;
+
+    private String bio;
+
+    private String image;
 
 
     public UserDto() {
     }
 
-    public UserDto(String email, String password) {
+
+    public UserDto(String email, String username) {
         this.email = email;
-        this.password = password;
+        this.username = username;
     }
 
     public UserDto(String username, String email, String password) {
-        this(email,password);
-        this.username = username;
+        this(email,username);
+        this.password = password;
+    }
+
+    public UserDto(String email, String token, String username, String bio, String image) {
+        this(email,username);
+        this.token = token;
+        this.bio = bio;
+        this.image = image;
     }
 
 
@@ -46,6 +59,30 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getPassword() {

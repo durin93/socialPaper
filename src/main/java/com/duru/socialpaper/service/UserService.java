@@ -7,13 +7,16 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.Date;
 
 @Service
+@Transactional
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -26,11 +29,9 @@ public class UserService {
 
 
     public User registration(UserDto userDto){
-
         User user = userDto.toUser();
-        log.info("UserSerice registration {}", user.toString());
-        log.debug("UserSerice registration {}", user.toString());
         user.makeJwtToken(jwtService);
+        log.debug("UserService registration {}", user.toString());
         return userRepository.save(user);
     }
 
@@ -39,9 +40,18 @@ public class UserService {
         log.debug("UserService authentication {}", userDto.toString());
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(EntityNotFoundException::new);
         user.matchPassword(userDto.getPassword());
-//        user.makeJwtToken(jwtService);
         return user;
     }
 
 
+    public User currentUser(String userEmail) {
+        return userRepository.findByEmail(userEmail).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public User update(String userEmail, UserDto userDto) {
+        log.debug("UserService update {} to {}", userEmail, userDto.toString());
+        User user = userRepository.findByEmail(userEmail).orElseThrow(EntityNotFoundException::new);
+        user.update(userDto);
+        return user;
+    }
 }

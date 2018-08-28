@@ -47,20 +47,18 @@ public class ApiUserControllerTest extends  AcceptanceTest{
     @Test
     public void regist() throws JsonProcessingException {
 
-
         UserDto user = new UserDto("Jacob", "jake@jake.jake", "jakejake");
+
         String userJSON = om.writeValueAsString(user);
+        userJSON = "{\"user\":" + userJSON + "}";
 
-
-                webTestClient.post().uri("/api/users")
+        webTestClient.post().uri("/api/users")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromObject(userJSON))
                 .exchange()
                 .expectStatus().isCreated()
-                .expectHeader().doesNotExist("Authorization")
-                .expectBody(User.class)
-                .isEqualTo(new User("Jacob","jake@jake.jake","jakejake"));
+                .expectBody(User.class).isEqualTo(new User("Jacob","jake@jake.jake","jakejake"));
     }
 
 

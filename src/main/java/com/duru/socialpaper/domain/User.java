@@ -14,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.swing.text.html.Option;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @JsonRootName("user")
@@ -71,7 +73,6 @@ public class User extends  AbstractEntity{
         return bio;
     }
 
-
     public String getImage() {
         return image;
     }
@@ -84,32 +85,54 @@ public class User extends  AbstractEntity{
     }
 
     public void makeJwtToken(JwtService jwtService){
-            this.token = jwtService.create("social",this,this.email);
+            this.token = jwtService.create("social", this.email ,"userAuthentication");
             log.debug("User makeJwtToken {}", token);
     }
 
+    public UserDto toUserDto(){
+        return new UserDto(email,token,username,bio,image);
+    }
+
+
+    public void update(UserDto userDto) {
+        this.email = Optional.ofNullable(userDto.getEmail()).orElse(this.email);
+        this.bio = Optional.ofNullable(userDto.getBio()).orElse(this.bio);
+        this.image = Optional.ofNullable(userDto.getImage()).orElse(this.image);
+    }
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
         User user = (User) o;
-        return Objects.equals(username, user.username) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(password, user.password);
+
+        if (username != null ? !username.equals(user.username) : user.username != null) return false;
+        if (email != null ? !email.equals(user.email) : user.email != null) return false;
+        if (password != null ? !password.equals(user.password) : user.password != null) return false;
+        if (token != null ? !token.equals(user.token) : user.token != null) return false;
+        if (bio != null ? !bio.equals(user.bio) : user.bio != null) return false;
+        return image != null ? image.equals(user.image) : user.image == null;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(username, email, password);
+        int result = super.hashCode();
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (token != null ? token.hashCode() : 0);
+        result = 31 * result + (bio != null ? bio.hashCode() : 0);
+        result = 31 * result + (image != null ? image.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userName='" + username + '\'' +
+                "username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", token='" + token + '\'' +
@@ -117,4 +140,5 @@ public class User extends  AbstractEntity{
                 ", image='" + image + '\'' +
                 '}';
     }
+
 }
