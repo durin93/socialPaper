@@ -3,24 +3,17 @@ package com.duru.socialpaper.domain;
 import com.duru.socialpaper.dto.UserDto;
 import com.duru.socialpaper.exception.NoAuthentication;
 import com.duru.socialpaper.service.JwtService;
-import com.duru.socialpaper.service.UserService;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.swing.text.html.Option;
-import java.util.Date;
-import java.util.Objects;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
-@JsonRootName("user")
+@JsonTypeName("user")
+//@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
 public class User extends  AbstractEntity{
 
     private static final Logger log = LoggerFactory.getLogger(User.class);
@@ -41,6 +34,14 @@ public class User extends  AbstractEntity{
     private String bio;
 
     private String image;
+
+    @ManyToMany
+    @JoinTable
+    private List<User> followings;
+
+    public void add(User following){
+        followings.add(following);
+    }
 
     public User() {
     }
@@ -94,10 +95,20 @@ public class User extends  AbstractEntity{
     }
 
 
+    public Profile toProfile() {
+        return new Profile();
+    }
+
+    public Profile toProfile(boolean following) {
+        return new Profile(username,bio,image,following);
+    }
+
     public void update(UserDto userDto) {
         this.email = Optional.ofNullable(userDto.getEmail()).orElse(this.email);
         this.bio = Optional.ofNullable(userDto.getBio()).orElse(this.bio);
         this.image = Optional.ofNullable(userDto.getImage()).orElse(this.image);
+        this.password =Optional.ofNullable(userDto.getPassword()).orElse(this.password);
+        this.username =Optional.ofNullable(userDto.getUsername()).orElse(this.username);
     }
 
 
@@ -140,5 +151,6 @@ public class User extends  AbstractEntity{
                 ", image='" + image + '\'' +
                 '}';
     }
+
 
 }

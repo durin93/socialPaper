@@ -1,8 +1,5 @@
 package com.duru.socialpaper.service;
 
-import com.duru.socialpaper.domain.User;
-import com.duru.socialpaper.domain.UserRepository;
-import com.duru.socialpaper.dto.UserDto;
 import com.duru.socialpaper.exception.UnAuthorization;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -14,12 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.annotation.Resource;
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
 public class JwtService {
@@ -81,10 +74,10 @@ public class JwtService {
             throw new UnAuthorization();
         }
 
-
         @SuppressWarnings("unchecked")
 //        Map<String, Object> value = (LinkedHashMap<String, Object>)claims.getBody().get(key);
         String value = (String) claims.getBody().get(key);
+        log.debug(value);
         return value;
     }
 

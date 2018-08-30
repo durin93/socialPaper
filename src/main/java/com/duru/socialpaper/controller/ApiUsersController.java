@@ -31,13 +31,12 @@ public class ApiUsersController {
     @PostMapping("")
     public ResponseEntity<User> registration(@RequestBody Map<String,UserDto> data){
         log.info("ApiUserController registration {}", data.get("user").toString());
-
         return new ResponseEntity<>(userService.registration(data.get("user")),HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<User> authentication(@RequestBody Map<String,UserDto> data){
-        log.info("ApiUserController authentication {} ", data.get("user").toString());
+        log.debug("ApiUserController authentication {} ", data.get("user").toString());
 
         HttpHeaders headers = new HttpHeaders();
         User user =   userService.authentication(data.get("user"));

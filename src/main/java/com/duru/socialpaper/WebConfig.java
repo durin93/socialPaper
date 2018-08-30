@@ -13,6 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 //            "/api/users/**",
             "/api/users",
             "/api/users/login",
+            "/api/profiles/{username}",
             "/error/**"
     };
 

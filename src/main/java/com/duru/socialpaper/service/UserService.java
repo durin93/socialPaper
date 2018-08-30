@@ -1,19 +1,16 @@
 package com.duru.socialpaper.service;
 
+import com.duru.socialpaper.domain.Profile;
 import com.duru.socialpaper.domain.User;
 import com.duru.socialpaper.domain.UserRepository;
 import com.duru.socialpaper.dto.UserDto;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.util.Date;
 
 @Service
 @Transactional
@@ -53,5 +50,17 @@ public class UserService {
         User user = userRepository.findByEmail(userEmail).orElseThrow(EntityNotFoundException::new);
         user.update(userDto);
         return user;
+    }
+
+    public Profile followUser(String username) {
+        User following  = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        User follower = userRepository.findByEmail(jwtService.get("social")).orElseThrow(EntityNotFoundException::new);
+        follower.add(following);
+        return follower.toProfile(true);
+    }
+
+    public Profile getProfile(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        return user.toProfile();
     }
 }

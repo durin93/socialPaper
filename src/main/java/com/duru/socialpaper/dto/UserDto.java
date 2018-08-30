@@ -23,18 +23,19 @@ public class UserDto {
     }
 
 
-    public UserDto(String email, String username) {
+    public UserDto(String email, String password) {
         this.email = email;
-        this.username = username;
-    }
-
-    public UserDto(String username, String email, String password) {
-        this(email,username);
         this.password = password;
     }
 
+    public UserDto(String username, String email, String password) {
+        this(email,password);
+        this.username = username;
+    }
+
     public UserDto(String email, String token, String username, String bio, String image) {
-        this(email,username);
+        this.email = email;
+        this.username = username;
         this.token = token;
         this.bio = bio;
         this.image = image;
