@@ -1,5 +1,6 @@
 package com.duru.socialpaper.web;
 
+import com.duru.socialpaper.domain.Profile;
 import com.duru.socialpaper.domain.User;
 import com.duru.socialpaper.dto.UserDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,7 +36,6 @@ public class ApiUsersControllerTest extends AcceptanceTest {
 
 
     }
-
     @Test
     public void regist() throws JsonProcessingException {
 
@@ -46,6 +46,7 @@ public class ApiUsersControllerTest extends AcceptanceTest {
 
 
         User registUser =
+
                 webTestClient.post().uri("/api/users")
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .accept(MediaType.APPLICATION_JSON)
@@ -60,7 +61,38 @@ public class ApiUsersControllerTest extends AcceptanceTest {
     }
 
     @Test
-    public void follow() throws JsonProcessingException {
+    public void follow_fail_noLogin() throws JsonProcessingException {
+                webTestClient.post().uri("/api/profiles/두린이/follow")
+                        .exchange()
+                        .expectStatus().isForbidden();
+}
 
+    @Test
+    public void follow_login() throws JsonProcessingException {
+        UserDto loginUser = new UserDto("사루", "saru@gmail.com", "1234");
+        String loginUserJSON = om.writeValueAsString(loginUser);
+        loginUserJSON = "{\"user\":" + loginUserJSON + "}";
+
+
+        String loginUserToken =
+        webTestClient.post().uri("/api/users/login")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(loginUserJSON))
+                .exchange()
+                .expectBody(User.class)
+                .returnResult().getResponseBody().getToken();
+
+        Profile following =
+                webTestClient.post().uri("/api/profiles/두린이/follow")
+                        .header("Authorization","Token "+loginUserToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(Profile.class)
+                        .returnResult().getResponseBody();
+
+        assertThat(following.getFollowing()).isEqualTo(true);
+        assertThat(following.getUsername()).isEqualTo("두린이");
     }
 }

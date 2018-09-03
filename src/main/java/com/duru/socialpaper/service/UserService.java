@@ -56,7 +56,7 @@ public class UserService {
         User following  = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         User follower = userRepository.findByEmail(jwtService.get("social")).orElseThrow(EntityNotFoundException::new);
         follower.add(following);
-        return follower.toProfile(true);
+        return following.toProfile(true);
     }
 
     public Profile getProfile(String username) {
