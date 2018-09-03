@@ -34,7 +34,7 @@ public class ApiUsersControllerTest extends AcceptanceTest {
         assertThat(loginUser.getEmail()).isEqualTo("durin@gmail.com");
         assertThat(loginUser.getPassword()).isEqualTo("1234");
 
-
+        //
     }
     @Test
     public void regist() throws JsonProcessingException {

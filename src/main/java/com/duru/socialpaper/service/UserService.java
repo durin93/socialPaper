@@ -2,7 +2,7 @@ package com.duru.socialpaper.service;
 
 import com.duru.socialpaper.domain.Profile;
 import com.duru.socialpaper.domain.User;
-import com.duru.socialpaper.domain.UserRepository;
+import com.duru.socialpaper.repository.UserRepository;
 import com.duru.socialpaper.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

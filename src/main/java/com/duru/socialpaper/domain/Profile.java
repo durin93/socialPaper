@@ -3,6 +3,8 @@ package com.duru.socialpaper.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
+import javax.persistence.Entity;
+
 @JsonTypeName("profile")
 public class Profile {
 
