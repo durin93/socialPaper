@@ -14,7 +14,7 @@ import java.util.Optional;
 @Entity
 @JsonTypeName("user")
 //@JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.NAME)
-public class User extends  AbstractEntity{
+public class User extends AbstractEntity {
 
     private static final Logger log = LoggerFactory.getLogger(User.class);
 
@@ -39,8 +39,14 @@ public class User extends  AbstractEntity{
     @JoinTable
     private List<User> followings;
 
-    public void add(User following){
+    public void add(User following) {
         followings.add(following);
+    }
+
+    public void delete(User following) {
+        if (followings.contains(following)) {
+            followings.remove(following);
+        }
     }
 
     public User() {
@@ -80,18 +86,18 @@ public class User extends  AbstractEntity{
 
 
     public void matchPassword(String password) {
-        if(!this.password.equals(password)){
+        if (!this.password.equals(password)) {
             throw new NoAuthentication("비밀번호가 틀립니다.");
         }
     }
 
-    public void makeJwtToken(JwtService jwtService){
-            this.token = jwtService.create("social", this.email ,"userAuthentication");
-            log.debug("User makeJwtToken {}", token);
+    public void makeJwtToken(JwtService jwtService) {
+        this.token = jwtService.create("social", this.email, "userAuthentication");
+        log.debug("User makeJwtToken {}", token);
     }
 
-    public UserDto toUserDto(){
-        return new UserDto(email,token,username,bio,image);
+    public UserDto toUserDto() {
+        return new UserDto(email, token, username, bio, image);
     }
 
 
@@ -100,15 +106,15 @@ public class User extends  AbstractEntity{
     }
 
     public Profile toProfile(boolean following) {
-        return new Profile(username,bio,image,following);
+        return new Profile(username, bio, image, following);
     }
 
     public void update(UserDto userDto) {
         this.email = Optional.ofNullable(userDto.getEmail()).orElse(this.email);
         this.bio = Optional.ofNullable(userDto.getBio()).orElse(this.bio);
         this.image = Optional.ofNullable(userDto.getImage()).orElse(this.image);
-        this.password =Optional.ofNullable(userDto.getPassword()).orElse(this.password);
-        this.username =Optional.ofNullable(userDto.getUsername()).orElse(this.username);
+        this.password = Optional.ofNullable(userDto.getPassword()).orElse(this.password);
+        this.username = Optional.ofNullable(userDto.getUsername()).orElse(this.username);
     }
 
 
@@ -151,6 +157,5 @@ public class User extends  AbstractEntity{
                 ", image='" + image + '\'' +
                 '}';
     }
-
 
 }

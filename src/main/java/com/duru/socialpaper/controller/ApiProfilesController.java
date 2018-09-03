@@ -27,6 +27,11 @@ public class ApiProfilesController {
         return new ResponseEntity<>(userService.followUser(username),HttpStatus.OK);
     }
 
+    @DeleteMapping("{username}/follow")
+    public ResponseEntity<Profile> unFollow(@PathVariable String username){
+        return new ResponseEntity<>(userService.unFollowUser(username),HttpStatus.OK);
+    }
+
 
     @GetMapping("{username}")
     public ResponseEntity<Profile> getProfile(@PathVariable String username){

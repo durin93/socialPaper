@@ -95,4 +95,35 @@ public class ApiUsersControllerTest extends AcceptanceTest {
         assertThat(following.getFollowing()).isEqualTo(true);
         assertThat(following.getUsername()).isEqualTo("두린이");
     }
+
+
+    @Test
+    public void unFollow_login() throws JsonProcessingException {
+        follow_login();
+
+        UserDto loginUser = new UserDto("사루", "saru@gmail.com", "1234");
+        String loginUserJSON = om.writeValueAsString(loginUser);
+        loginUserJSON = "{\"user\":" + loginUserJSON + "}";
+
+
+        String loginUserToken =
+        webTestClient.post().uri("/api/users/login")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromObject(loginUserJSON))
+                .exchange()
+                .expectBody(User.class)
+                .returnResult().getResponseBody().getToken();
+
+                webTestClient.delete().uri("/api/profiles/두린이/follow")
+                        .header("Authorization","Token "+loginUserToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(Profile.class)
+                        .returnResult().getResponseBody().getFollowing().equals(false);
+    }
+
+
+
 }

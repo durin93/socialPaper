@@ -59,8 +59,18 @@ public class UserService {
         return following.toProfile(true);
     }
 
+    public Profile unFollowUser(String username) {
+        User following  = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
+        User follower = userRepository.findByEmail(jwtService.get("social")).orElseThrow(EntityNotFoundException::new);
+        follower.delete(following);
+        return following.toProfile(false);
+    }
+
+
     public Profile getProfile(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
         return user.toProfile();
     }
+
+
 }
