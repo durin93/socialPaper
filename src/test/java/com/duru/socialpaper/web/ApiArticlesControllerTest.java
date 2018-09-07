@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ApiArticlesControllerTest extends AcceptanceTest {
 
     @Test
-    public void post_articles() throws JsonProcessingException {
+    public void create_articles() throws JsonProcessingException {
 
         UserDto loginUser = new UserDto("사루", "saru@gmail.com", "1234");
         String loginUserJSON = om.writeValueAsString(loginUser);
@@ -54,6 +54,8 @@ public class ApiArticlesControllerTest extends AcceptanceTest {
                         .expectStatus().isCreated()
                         .expectBody(Article.class)
                         .returnResult().getResponseBody();
+
+
 
     }
 

@@ -102,7 +102,7 @@ public class User extends AbstractEntity {
 
 
     public Profile toProfile() {
-        return new Profile();
+        return new Profile(username, bio, image, false);
     }
 
     public Profile toProfile(boolean following) {

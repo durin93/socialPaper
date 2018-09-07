@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -42,20 +43,38 @@ public class AbstractEntity {
         this.id = id;
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
+    public String getCreateDate() {
+        return getFormattedDate(createDate);
     }
 
     public void setCreateDate(LocalDateTime createDate) {
         this.createDate = createDate;
     }
 
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
+    public String getModifiedDate() {
+        return getFormattedDate(modifiedDate,"yyyyMMdd kk:HH:mm:ss.SSS" );
     }
 
     public void setModifiedDate(LocalDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
+    }
+
+
+    public String getFormattedModifiedDate() {
+        return getFormattedDate(modifiedDate,"yyyyMMdd kk:HH:mm:ss.SSS");
+    }
+
+    private String getFormattedDate(LocalDateTime dateTime, String format) {
+        if (dateTime == null) {
+            return "";
+        }
+        return dateTime.format(DateTimeFormatter.ofPattern(format));
+    }
+    private String getFormattedDate(LocalDateTime dateTime) {
+        if (dateTime == null) {
+            return "";
+        }
+        return dateTime.format(DateTimeFormatter.ISO_INSTANT);
     }
 
 

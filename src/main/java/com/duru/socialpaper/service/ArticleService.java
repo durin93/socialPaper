@@ -43,13 +43,13 @@ public class ArticleService {
         log.debug("create article {}", articleDto.toString());
         Article article = articleDto.toArticle();
         article.writeBy(findByUserEmail(jwtService.get("social")));
-        for (String tagWord : articleDto.getTagList()) {
-            if (!tagRepository.findByTag(tagWord).isPresent()) {
-                tagRepository.save(new Tag(tagWord));
-            }
-            article.addTag(tagRepository.findByTag(tagWord).get());
-        }
 
+        for (String tagWord : articleDto.getTagList()) {
+            Tag tag = tagRepository.findByTag(tagWord).orElse(new Tag(tagWord));
+            tag.addArticle(article);
+            article.addTag(tag);
+            tagRepository.save(tag);
+        }
 
         return articleRepository.save(article);
     }

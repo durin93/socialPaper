@@ -1,17 +1,18 @@
 package com.duru.socialpaper.domain;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @JsonTypeName("article")
 public class Article extends  AbstractEntity {
-
-    @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "fk_article_author"))
-    private User author;
 
     private String slug;
 
@@ -24,15 +25,31 @@ public class Article extends  AbstractEntity {
 
     @ManyToMany
     @JoinTable
-    private List<Tag> tagList;
+    private List<Tag> tagList = new ArrayList<>();
 
-    public void addTag(Tag tag) {
-        tagList.add(tag);
-    }
+    private String createdAt;
+
+    private String updatedAt;
 
     private Boolean favorited = false;
 
     private int favoritesCount = 0;
+
+
+
+    @ManyToOne
+    @JoinColumn(foreignKey = @ForeignKey(name = "fk_article_author"))
+    private User author;
+
+
+    public void addTag(Tag tag) {
+
+        if(!tagList.contains(tag)){
+            tagList.add(tag);
+        }
+
+    }
+
 
     public  Article(){
 
@@ -53,6 +70,21 @@ public class Article extends  AbstractEntity {
         return slug;
     }
 
+    public List<String> getTagList() {
+        List<String> tagStrings = new ArrayList<>();
+        for (Tag tag:tagList) {
+            tagStrings.add(tag.getTag());
+        }
+        return tagStrings;
+    }
+
+    public String getCreatedAt() {
+        return getCreateDate();
+    }
+
+    public String getUpdatedAt() {
+        return getModifiedDate();
+    }
 
     public String getTitle() {
         return title;
